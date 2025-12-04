@@ -7,16 +7,27 @@ const User = require("./models/User");
 const Booking = require("./models/Booking");
 
 const app = express();
-app.use(cors());
+
+// ======================== CORS FIX FOR NETLIFY ========================
+app.use(cors({
+    origin: [
+        "https://peaceful-profiterole-100600.netlify.app", // your frontend
+        "http://localhost:5500", // local testing
+        "http://localhost:3000"  // alt local testing
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
+}));
+
 app.use(express.json());
 
-// CONNECT MONGO ATLAS
+// ======================== CONNECT MONGO ========================
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB Connected"))
-    .catch(err => console.log(err));
+    .catch(err => console.log("MongoDB Error:", err));
 
 
-// ======================= SIGNUP =========================
+// ======================== SIGNUP ========================
 app.post("/signup", async (req, res) => {
     const { username, email, phone, password, confirmPassword } = req.body;
 
@@ -41,7 +52,7 @@ app.post("/signup", async (req, res) => {
 });
 
 
-// ======================= LOGIN =========================
+// ======================== LOGIN ========================
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -58,7 +69,7 @@ app.post("/login", async (req, res) => {
 });
 
 
-// ======================= PROFILE =========================
+// ======================== PROFILE ========================
 app.get("/profile/:id", async (req, res) => {
     const user = await User.findById(req.params.id);
 
@@ -72,7 +83,7 @@ app.get("/profile/:id", async (req, res) => {
 });
 
 
-// ======================= BOOKING =========================
+// ======================== BOOKING ========================
 app.post("/booking", async (req, res) => {
     const { userId, salonName, services, totalAmount, date, time } = req.body;
 
@@ -90,7 +101,7 @@ app.post("/booking", async (req, res) => {
 });
 
 
-// ======================= RECEIPT =========================
+// ======================== RECEIPT ========================
 app.get("/receipt/:id", async (req, res) => {
     const booking = await Booking.findById(req.params.id);
 
@@ -109,6 +120,6 @@ app.get("/receipt/:id", async (req, res) => {
 });
 
 
-// PORT (REQUIRED FOR RENDER)
+// ======================== PORT ========================
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log("Server running on:", PORT));
