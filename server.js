@@ -11,15 +11,13 @@ const app = express();
 // ======================== CORS FIX FOR NETLIFY ========================
 app.use(cors({
     origin: [
-        "https://peaceful-profiterole-100600.netlify.app", // your frontend
-        "http://localhost:5500", // local testing
-        "http://localhost:3000"  // alt local testing
+        "https://snazzy-nougat-6cbf5f.netlify.app",
+        "https://8bookmycut8.netlify.app"
     ],
     methods: ["GET", "POST"],
     credentials: true
 }));
 
-app.use(express.json());
 
 // ======================== CONNECT MONGO ========================
 mongoose.connect(process.env.MONGO_URI)
